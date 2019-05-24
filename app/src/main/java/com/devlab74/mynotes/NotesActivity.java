@@ -1,6 +1,7 @@
 package com.devlab74.mynotes;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,15 +26,9 @@ public class NotesActivity extends BaseActivity {
         setContentView(R.layout.activity_notes);
 
         floatingActionButton = findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(onClickListener);
 
         initRecyclerView();
-
-        // For testing only
-        if (notesList == null) {
-            notesList = new ArrayList<>();
-            notesList.add(new Note());
-            noteRecyclerAdapter.setNotes(notesList);
-        }
     }
 
     private void initRecyclerView() {
@@ -43,4 +38,13 @@ public class NotesActivity extends BaseActivity {
         noteRecyclerAdapter = new NoteRecyclerAdapter();
         recyclerView.setAdapter(noteRecyclerAdapter);
     }
+
+    private View.OnClickListener onClickListener = view -> {
+        if (notesList == null) {
+            notesList = new ArrayList<>();
+        }
+        Note note = new Note();
+        notesList.add(note);
+        noteRecyclerAdapter.setNotes(notesList);
+    };
 }

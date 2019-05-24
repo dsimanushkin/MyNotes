@@ -1,5 +1,6 @@
 package com.devlab74.mynotes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -40,11 +41,7 @@ public class NotesActivity extends BaseActivity {
     }
 
     private View.OnClickListener onClickListener = view -> {
-        if (notesList == null) {
-            notesList = new ArrayList<>();
-        }
-        Note note = new Note();
-        notesList.add(note);
-        noteRecyclerAdapter.setNotes(notesList);
+        Intent intent = new Intent(this, AddEditNoteActivity.class);
+        startActivity(intent);
     };
 }

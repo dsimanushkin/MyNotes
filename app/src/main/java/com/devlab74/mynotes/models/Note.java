@@ -1,9 +1,15 @@
 package com.devlab74.mynotes.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.Date;
 
+@Entity
 public class Note {
 
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String title;
     private String description;
     private Date dateCreated;
@@ -17,6 +23,14 @@ public class Note {
     }
 
     public Note() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="4dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_title"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/note_optional_image"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/note_optional_image"
+            android:layout_alignParentStart="@id/note_title"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="4dp"
+            android:visibility="visible"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_description"
+            android:layout_below="@id/note_title"
+            android:layout_toStartOf="@id/note_optional_image"/>
+
+        <View
+            android:id="@+id/divider"
+            style="@style/Divider"
+            android:layout_below="@id/note_description"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="4dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/image_view_date"
+            android:layout_below="@id/divider"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_date"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_date"
+            android:layout_below="@id/divider"
+            android:layout_toEndOf="@id/image_view_date"
+            android:textColor="#979797"
+            android:textSize="12sp"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

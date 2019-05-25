@@ -75,8 +75,9 @@ public class NotesActivity extends BaseActivity {
             String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
             Date dateCreated = (Date) data.getSerializableExtra(AddEditNoteActivity.EXTRA_DATE_CREATED);
             Date dateUpdated = (Date) data.getSerializableExtra(AddEditNoteActivity.EXTRA_DATE_UPDATED);
+            String imagePath = data.getStringExtra(AddEditNoteActivity.EXTRA_IMAGE_PATH);
 
-            Note note = new Note(title, description, dateCreated, dateUpdated);
+            Note note = new Note(title, description, dateCreated, dateUpdated, imagePath);
 
             noteViewModel.insert(note);
             Toast.makeText(this, R.string.note_saved, Toast.LENGTH_SHORT).show();

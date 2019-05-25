@@ -1,8 +1,11 @@
 package com.devlab74.mynotes.adapters;
 
+import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,6 +13,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.devlab74.mynotes.R;
 import com.devlab74.mynotes.models.Note;
 
@@ -20,6 +25,7 @@ import java.util.Locale;
 
 public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.NoteHolder> {
 
+    private Context context;
     private List<Note> notesFull;
     private List<Note> notes = new ArrayList<>();
 
@@ -46,6 +52,7 @@ public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.N
     @Override
     public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_note_list_item, parent, false);
+        context = parent.getContext();
         return new NoteHolder(itemView);
     }
 
@@ -60,6 +67,19 @@ public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.N
             String dateUpdated = dateFormat.format(currentNote.getDateLastUpdated());
             String date = dateCreated + " / " + dateUpdated;
             holder.noteDate.setText(date);
+        }
+
+        if (currentNote.getOptionalImagePath() != null) {
+            Uri uri = Uri.parse(currentNote.getOptionalImagePath());
+            RequestOptions requestOptions = new RequestOptions()
+                    .placeholder(R.drawable.white_background)
+                    .error(R.drawable.white_background);
+            Glide.with(context)
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(uri)
+                    .into(holder.noteOptionalPhoto);
+        } else {
+            holder.noteOptionalPhoto.setVisibility(View.GONE);
         }
     }
 
@@ -81,13 +101,15 @@ public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.N
         private TextView noteTitle;
         private TextView noteDescription;
         private TextView noteDate;
+        private ImageView noteOptionalPhoto;
 
 
-        public NoteHolder(@NonNull View itemView) {
+        private NoteHolder(@NonNull View itemView) {
             super(itemView);
             noteTitle = itemView.findViewById(R.id.note_title);
             noteDescription = itemView.findViewById(R.id.note_description);
             noteDate = itemView.findViewById(R.id.note_date);
+            noteOptionalPhoto = itemView.findViewById(R.id.note_optional_image);
         }
     }
 

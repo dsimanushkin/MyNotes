@@ -21,24 +21,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar_layout"
-            android:id="@+id/edit_text_title"
+            android:id="@+id/note_title"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:hint="Title..."
+            android:hint="@string/note_title_holder"
             android:inputType="text"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/edit_text_description"
-            android:layout_below="@id/edit_text_title"
+            android:id="@+id/note_description"
+            android:layout_below="@id/note_title"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:gravity="top|left"
-            android:hint="Write your note here..."
+            android:gravity="top|start"
+            android:hint="@string/note_description_holder"
             android:inputType="textMultiLine"/>
+
+        <ImageView
+            android:id="@+id/note_optional_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/note_description"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:adjustViewBounds="true"
+            android:maxHeight="150dp"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            tools:srcCompat="@tools:sample/avatars"/>
 
     </RelativeLayout>
 

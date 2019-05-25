@@ -2,4 +2,8 @@
     <string name="app_name">MyNotes</string>
     <string name="note_saved">Note has been saved!</string>
     <string name="note_cannot_be_empty">Note cannot be empty!</string>
+    <string name="note_title_holder">Title&#8230;</string>
+    <string name="note_description_holder">Write your note here&#8230;</string>
+    <string name="menu_add_image">Add image</string>
+    <string name="menu_save">Save</string>
 </resources>

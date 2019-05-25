@@ -14,12 +14,14 @@ public class Note {
     private String description;
     private Date dateCreated;
     private Date dateLastUpdated;
+    private String optionalImagePath;
 
-    public Note(String title, String description, Date dateCreated, Date dateLastUpdated) {
+    public Note(String title, String description, Date dateCreated, Date dateLastUpdated, String optionalImagePath) {
         this.title = title;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dateLastUpdated = dateLastUpdated;
+        this.optionalImagePath = optionalImagePath;
     }
 
     public Note() {
@@ -65,13 +67,23 @@ public class Note {
         this.dateLastUpdated = dateLastUpdated;
     }
 
+    public String getOptionalImagePath() {
+        return optionalImagePath;
+    }
+
+    public void setOptionalImagePath(String optionalImagePath) {
+        this.optionalImagePath = optionalImagePath;
+    }
+
     @Override
     public String toString() {
         return "Note{" +
-                "title='" + title + '\'' +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", dateLastUpdated=" + dateLastUpdated +
+                ", optionalImagePath='" + optionalImagePath + '\'' +
                 '}';
     }
 }

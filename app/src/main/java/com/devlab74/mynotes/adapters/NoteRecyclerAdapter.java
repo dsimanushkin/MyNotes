@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.N
     private Context context;
     private List<Note> notesFull;
     private List<Note> notes = new ArrayList<>();
+    private OnItemClickListener onItemClickListener;
 
     public NoteRecyclerAdapter() {
         super(DIFF_CALLBACK);
@@ -110,7 +112,22 @@ public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.N
             noteDescription = itemView.findViewById(R.id.note_description);
             noteDate = itemView.findViewById(R.id.note_date);
             noteOptionalPhoto = itemView.findViewById(R.id.note_optional_image);
+
+            itemView.setOnClickListener(view -> {
+                int position = NoteHolder.this.getAdapterPosition();
+                if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
+                    onItemClickListener.onItemClick(getItem(position));
+                }
+            });
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Note note);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
 }

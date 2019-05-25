@@ -51,6 +51,7 @@ public class AddEditNoteActivity extends BaseActivity {
         noteOptionalPhoto = findViewById(R.id.note_optional_image);
 
         initActionBar();
+        setupNote();
     }
 
     private void initActionBar() {
@@ -96,11 +97,33 @@ public class AddEditNoteActivity extends BaseActivity {
         return true;
     }
 
+    private void setupNote() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_ID)) {
+            toolbarTitle.setText(R.string.edit_note);
+            editTextTitle.setText(getIntent().getStringExtra(EXTRA_TITLE));
+            editTextDescription.setText(getIntent().getStringExtra(EXTRA_DESCRIPTION));
+            if (intent.getStringExtra(EXTRA_IMAGE_PATH) != null) {
+                imagePath = Uri.parse(getIntent().getStringExtra(EXTRA_IMAGE_PATH));
+                RequestOptions requestOptions = new RequestOptions()
+                        .placeholder(R.drawable.white_background)
+                        .error(R.drawable.white_background);
+                Glide.with(this)
+                        .setDefaultRequestOptions(requestOptions)
+                        .load(imagePath)
+                        .into(noteOptionalPhoto);
+                viewAddedImage();
+            }
+        } else {
+            toolbarTitle.setText(R.string.add_note);
+        }
+    }
+
     private void saveNote() {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
         Date currentDate = Calendar.getInstance().getTime();
-        Date dateCreated = null;
+        Date dateCreated = (Date) getIntent().getSerializableExtra(EXTRA_DATE_CREATED);
         if (title.trim().isEmpty() || description.trim().isEmpty()) {
             Toast.makeText(this, R.string.note_cannot_be_empty, Toast.LENGTH_SHORT).show();
             return;

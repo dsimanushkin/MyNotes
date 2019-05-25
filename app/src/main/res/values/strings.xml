@@ -6,4 +6,8 @@
     <string name="note_description_holder">Write your note here&#8230;</string>
     <string name="menu_add_image">Add image</string>
     <string name="menu_save">Save</string>
+    <string name="note_updated">Note has been updated!</string>
+    <string name="note_not_updated">Note can not be update!</string>
+    <string name="add_note">Add note</string>
+    <string name="edit_note">Edit note</string>
 </resources>

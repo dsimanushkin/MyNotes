@@ -25,6 +25,7 @@ public class NotesActivity extends BaseActivity {
     private NoteViewModel noteViewModel;
 
     private static final int ADD_NOTE_REQUEST = 0;
+    private static final int EDIT_NOTE_REQUEST = 1;
 
     private List<Note> notesList;
     private FloatingActionButton floatingActionButton;
@@ -60,6 +61,15 @@ public class NotesActivity extends BaseActivity {
         recyclerView.hasFixedSize();
         noteRecyclerAdapter = new NoteRecyclerAdapter();
         recyclerView.setAdapter(noteRecyclerAdapter);
+        noteRecyclerAdapter.setOnItemClickListener(note -> {
+            Intent intent = new Intent(this, AddEditNoteActivity.class);
+            intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.getTitle());
+            intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.getDescription());
+            intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.getId());
+            intent.putExtra(AddEditNoteActivity.EXTRA_DATE_CREATED, note.getDateCreated());
+            intent.putExtra(AddEditNoteActivity.EXTRA_IMAGE_PATH, note.getOptionalImagePath());
+            startActivityForResult(intent, EDIT_NOTE_REQUEST);
+        });
     }
 
     private View.OnClickListener onClickListener = view -> {
@@ -81,6 +91,24 @@ public class NotesActivity extends BaseActivity {
 
             noteViewModel.insert(note);
             Toast.makeText(this, R.string.note_saved, Toast.LENGTH_SHORT).show();
+        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+            String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
+            String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
+            Date dateCreated = (Date) data.getSerializableExtra(AddEditNoteActivity.EXTRA_DATE_CREATED);
+            Date dateUpdated = (Date) data.getSerializableExtra(AddEditNoteActivity.EXTRA_DATE_UPDATED);
+            String imagePath = data.getStringExtra(AddEditNoteActivity.EXTRA_IMAGE_PATH);
+
+            Note note = new Note(title, description, dateCreated, dateUpdated, imagePath);
+
+            int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);
+            if (id == -1) {
+                Toast.makeText(this, R.string.note_not_updated, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            note.setId(id);
+            noteViewModel.update(note);
+            Toast.makeText(this, R.string.note_updated, Toast.LENGTH_SHORT).show();
         }
     }
 }

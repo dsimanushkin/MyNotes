@@ -12,9 +12,16 @@
         android:layout_height="match_parent"
         android:id="@+id/container">
 
+        <include
+            android:id="@+id/toolbar_layout"
+            layout="@layout/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/toolbar_layout"
             android:id="@+id/notes_list"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"

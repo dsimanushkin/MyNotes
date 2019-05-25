@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -22,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class NotesActivity extends BaseActivity {
 
@@ -48,6 +50,7 @@ public class NotesActivity extends BaseActivity {
 
         initRecyclerView();
         subscribeObservers();
+        initActionBar();
     }
 
     private void subscribeObservers() {
@@ -92,6 +95,13 @@ public class NotesActivity extends BaseActivity {
         Intent intent = new Intent(this, AddEditNoteActivity.class);
         startActivityForResult(intent, ADD_NOTE_REQUEST);
     };
+
+    private void initActionBar() {
+        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_navigation_menu);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

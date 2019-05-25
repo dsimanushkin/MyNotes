@@ -1,18 +1,28 @@
 package com.devlab74.mynotes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class AddEditNoteActivity extends BaseActivity {
+
+    public static final String EXTRA_ID = "com.devlab74.mynotes.EXTRA_ID";
+    public static final String EXTRA_TITLE = "com.devlab74.mynotes.EXTRA_TITLE";
+    public static final String EXTRA_DESCRIPTION = "com.devlab74.mynotes.EXTRA_DESCRIPTION";
+    public static final String EXTRA_DATE_CREATED = "com.devlab74.mynotes.EXTRA_DATE_CREATED";
+    public static final String EXTRA_DATE_UPDATED = "com.devlab74.mynotes.EXTRA_DATE_UPDATED";
 
     private TextView toolbarTitle;
     private EditText editTextTitle;
@@ -54,9 +64,34 @@ public class AddEditNoteActivity extends BaseActivity {
                 break;
             }
             case R.id.note_menu_save: {
+                saveNote();
                 break;
             }
         }
         return true;
+    }
+
+    private void saveNote() {
+        String title = editTextTitle.getText().toString();
+        String description = editTextDescription.getText().toString();
+        Date currentDate = Calendar.getInstance().getTime();
+        Date dateCreated = null;
+        if (title.trim().isEmpty() || description.trim().isEmpty()) {
+            Toast.makeText(this, R.string.note_cannot_be_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_TITLE, title);
+        intent.putExtra(EXTRA_DESCRIPTION, description);
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1) {
+            intent.putExtra(EXTRA_ID, id);
+            intent.putExtra(EXTRA_DATE_CREATED, dateCreated);
+        } else {
+            intent.putExtra(EXTRA_DATE_CREATED, currentDate);
+        }
+        intent.putExtra(EXTRA_DATE_UPDATED, currentDate);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

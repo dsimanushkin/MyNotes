@@ -6,18 +6,41 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.devlab74.mynotes.R;
 import com.devlab74.mynotes.models.Note;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapter.NoteHolder> {
+public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.NoteHolder> {
 
     private List<Note> notesFull;
     private List<Note> notes = new ArrayList<>();
+
+    public NoteRecyclerAdapter() {
+        super(DIFF_CALLBACK);
+    }
+
+    private static final DiffUtil.ItemCallback<Note> DIFF_CALLBACK = new DiffUtil.ItemCallback<Note>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
+            return oldItem.getTitle().equals(newItem.getTitle()) &&
+                    oldItem.getDescription().equals(newItem.getDescription()) &&
+                    oldItem.getDateCreated().equals(newItem.getDateCreated()) &&
+                    oldItem.getDateLastUpdated().equals(newItem.getDateLastUpdated());
+        }
+    };
 
     @NonNull
     @Override
@@ -28,7 +51,16 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NoteHolder holder, int position) {
-
+        Note currentNote = getItem(position);
+        holder.noteTitle.setText(currentNote.getTitle());
+        holder.noteDescription.setText(currentNote.getDescription());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+        if (currentNote.getDateLastUpdated() != null && currentNote.getDateCreated() != null) {
+            String dateCreated = dateFormat.format(currentNote.getDateCreated());
+            String dateUpdated = dateFormat.format(currentNote.getDateLastUpdated());
+            String date = dateCreated + " / " + dateUpdated;
+            holder.noteDate.setText(date);
+        }
     }
 
     @Override
@@ -42,7 +74,6 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
     public void setNotes(List<Note> notes) {
         this.notes = notes;
         notesFull = new ArrayList<>(notes);
-        notifyDataSetChanged();
     }
 
     class NoteHolder extends RecyclerView.ViewHolder {

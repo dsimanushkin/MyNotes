@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -125,7 +126,7 @@ public class AddEditNoteActivity extends BaseActivity {
         Date currentDate = Calendar.getInstance().getTime();
         Date dateCreated = (Date) getIntent().getSerializableExtra(EXTRA_DATE_CREATED);
         if (title.trim().isEmpty() || description.trim().isEmpty()) {
-            Toast.makeText(this, R.string.note_cannot_be_empty, Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.activity_content), R.string.note_cannot_be_empty, Snackbar.LENGTH_LONG).show();
             return;
         }
         Intent intent = new Intent();

@@ -98,6 +98,10 @@ public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.N
         notesFull = new ArrayList<>(notes);
     }
 
+    public Note getNoteAt(int position) {
+        return getItem(position);
+    }
+
     class NoteHolder extends RecyclerView.ViewHolder {
 
         private TextView noteTitle;

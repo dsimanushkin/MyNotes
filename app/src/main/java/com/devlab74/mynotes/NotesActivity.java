@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +18,7 @@ import com.devlab74.mynotes.adapters.NoteRecyclerAdapter;
 import com.devlab74.mynotes.models.Note;
 import com.devlab74.mynotes.viewmodels.NoteViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
 import java.util.List;
@@ -70,6 +73,19 @@ public class NotesActivity extends BaseActivity {
             intent.putExtra(AddEditNoteActivity.EXTRA_IMAGE_PATH, note.getOptionalImagePath());
             startActivityForResult(intent, EDIT_NOTE_REQUEST);
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                noteViewModel.delete(noteRecyclerAdapter.getNoteAt(viewHolder.getAdapterPosition()));
+                Snackbar.make(findViewById(R.id.activity_content), R.string.note_deleted, Snackbar.LENGTH_LONG).show();
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
     private View.OnClickListener onClickListener = view -> {
@@ -90,7 +106,7 @@ public class NotesActivity extends BaseActivity {
             Note note = new Note(title, description, dateCreated, dateUpdated, imagePath);
 
             noteViewModel.insert(note);
-            Toast.makeText(this, R.string.note_saved, Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.activity_content), R.string.note_saved, Snackbar.LENGTH_LONG).show();
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
             String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
             String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
@@ -102,13 +118,13 @@ public class NotesActivity extends BaseActivity {
 
             int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);
             if (id == -1) {
-                Toast.makeText(this, R.string.note_not_updated, Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.activity_content), R.string.note_not_updated, Snackbar.LENGTH_LONG).show();
                 return;
             }
 
             note.setId(id);
             noteViewModel.update(note);
-            Toast.makeText(this, R.string.note_updated, Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.activity_content), R.string.note_updated, Snackbar.LENGTH_LONG).show();
         }
     }
 }

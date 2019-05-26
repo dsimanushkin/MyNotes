@@ -3,6 +3,7 @@ package com.devlab74.mynotes;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -10,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +39,7 @@ public class NotesActivity extends BaseActivity {
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
     private NoteRecyclerAdapter noteRecyclerAdapter;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,5 +140,15 @@ public class NotesActivity extends BaseActivity {
             noteViewModel.update(note);
             Snackbar.make(findViewById(R.id.activity_content), R.string.note_updated, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            drawerLayout = findViewById(R.id.drawer_layout);
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
+        return true;
     }
 }

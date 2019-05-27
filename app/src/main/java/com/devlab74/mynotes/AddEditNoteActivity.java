@@ -9,19 +9,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.devlab74.mynotes.models.Category;
+import com.devlab74.mynotes.viewmodels.CategoryViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -34,6 +40,7 @@ public class AddEditNoteActivity extends BaseActivity {
     public static final String EXTRA_DATE_CREATED = "com.devlab74.mynotes.EXTRA_DATE_CREATED";
     public static final String EXTRA_DATE_UPDATED = "com.devlab74.mynotes.EXTRA_DATE_UPDATED";
     public static final String EXTRA_IMAGE_PATH = "com.devlab74.mynotes.EXTRA_IMAGE_PATH";
+    public static final String EXTRA_CATEGORY_TITLE = "com.devlab74.mynotes.EXTRA_CATEGORY_TITLE";
     private static final int PICK_IMAGE = 1;
 
     private TextView toolbarTitle;
@@ -41,6 +48,7 @@ public class AddEditNoteActivity extends BaseActivity {
     private EditText editTextDescription;
     private ImageView noteOptionalPhoto;
     private Uri imagePath;
+    private Spinner categorySpinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,9 +58,32 @@ public class AddEditNoteActivity extends BaseActivity {
         editTextTitle = findViewById(R.id.note_title);
         editTextDescription = findViewById(R.id.note_description);
         noteOptionalPhoto = findViewById(R.id.note_optional_image);
+        categorySpinner = findViewById(R.id.category_spinner);
 
         initActionBar();
+        subscribeObservers();
         setupNote();
+    }
+
+    private void subscribeObservers() {
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
+        categoryViewModel.getAllCategories().observe(this, categories -> {
+            ArrayList<Category> categoriesFinal = new ArrayList<>(categories);
+            categoriesFinal.remove(0);
+            ArrayAdapter<Category> categoryArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoriesFinal);
+            categoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            categorySpinner.setAdapter(categoryArrayAdapter);
+            Intent intent = getIntent();
+            if (!categoriesFinal.isEmpty() && intent.hasExtra(EXTRA_CATEGORY_TITLE)) {
+                String categoryTitle = intent.getStringExtra(EXTRA_CATEGORY_TITLE);
+                for (int i = 0; i < categoriesFinal.size(); i++) {
+                    if (categoriesFinal.get(i).getTitle().equals(categoryTitle)) {
+                        categorySpinner.setSelection(i);
+                        return;
+                    }
+                }
+            }
+        });
     }
 
     private void initActionBar() {
@@ -98,6 +129,10 @@ public class AddEditNoteActivity extends BaseActivity {
         return true;
     }
 
+    public Category getSelectedCategory() {
+        return (Category) categorySpinner.getSelectedItem();
+    }
+
     private void setupNote() {
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_ID)) {
@@ -125,6 +160,7 @@ public class AddEditNoteActivity extends BaseActivity {
         String description = editTextDescription.getText().toString();
         Date currentDate = Calendar.getInstance().getTime();
         Date dateCreated = (Date) getIntent().getSerializableExtra(EXTRA_DATE_CREATED);
+        String categoryTitle = getSelectedCategory().getTitle();
         if (title.trim().isEmpty() || description.trim().isEmpty()) {
             Snackbar.make(findViewById(R.id.activity_content), R.string.note_cannot_be_empty, Snackbar.LENGTH_LONG).show();
             return;
@@ -132,6 +168,7 @@ public class AddEditNoteActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_DESCRIPTION, description);
+        intent.putExtra(EXTRA_CATEGORY_TITLE, categoryTitle);
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
             intent.putExtra(EXTRA_ID, id);

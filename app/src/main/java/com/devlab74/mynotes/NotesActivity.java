@@ -18,10 +18,14 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.devlab74.mynotes.adapters.CategoryDrawerAdapter;
 import com.devlab74.mynotes.adapters.NoteRecyclerAdapter;
+import com.devlab74.mynotes.models.Category;
 import com.devlab74.mynotes.models.Note;
+import com.devlab74.mynotes.viewmodels.CategoryViewModel;
 import com.devlab74.mynotes.viewmodels.NoteViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
@@ -31,15 +35,20 @@ import java.util.Objects;
 public class NotesActivity extends BaseActivity {
 
     private NoteViewModel noteViewModel;
+    private CategoryViewModel categoryViewModel;
 
     private static final int ADD_NOTE_REQUEST = 0;
     private static final int EDIT_NOTE_REQUEST = 1;
 
     private List<Note> notesList;
+    private List<Category> categoryList;
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
     private NoteRecyclerAdapter noteRecyclerAdapter;
+    private CategoryDrawerAdapter categoryDrawerAdapter;
     private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private RecyclerView recyclerViewNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +57,15 @@ public class NotesActivity extends BaseActivity {
         setContentView(R.layout.activity_notes);
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
 
         floatingActionButton = findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(onClickListener);
+        navigationView = findViewById(R.id.navigation_view);
 
         initRecyclerView();
         subscribeObservers();
+        initNavigationView();
         initActionBar();
     }
 
@@ -62,6 +74,11 @@ public class NotesActivity extends BaseActivity {
             notesList = notes;
             noteRecyclerAdapter.submitList(notesList);
             noteRecyclerAdapter.setNotes(notesList);
+        });
+
+        categoryViewModel.getAllCategories().observe(this, categories -> {
+            categoryList = categories;
+            categoryDrawerAdapter.setCategories(categories);
         });
     }
 
@@ -78,6 +95,7 @@ public class NotesActivity extends BaseActivity {
             intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.getId());
             intent.putExtra(AddEditNoteActivity.EXTRA_DATE_CREATED, note.getDateCreated());
             intent.putExtra(AddEditNoteActivity.EXTRA_IMAGE_PATH, note.getOptionalImagePath());
+            intent.putExtra(AddEditNoteActivity.EXTRA_CATEGORY_TITLE, note.getCategoryTitle());
             startActivityForResult(intent, EDIT_NOTE_REQUEST);
         });
 
@@ -107,6 +125,13 @@ public class NotesActivity extends BaseActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_navigation_menu);
     }
 
+    private void initNavigationView() {
+        recyclerViewNavigation = navigationView.findViewById(R.id.recycler_view_navigation);
+        recyclerViewNavigation.setLayoutManager(new LinearLayoutManager(this));
+        categoryDrawerAdapter = new CategoryDrawerAdapter();
+        recyclerViewNavigation.setAdapter(categoryDrawerAdapter);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -116,8 +141,9 @@ public class NotesActivity extends BaseActivity {
             Date dateCreated = (Date) data.getSerializableExtra(AddEditNoteActivity.EXTRA_DATE_CREATED);
             Date dateUpdated = (Date) data.getSerializableExtra(AddEditNoteActivity.EXTRA_DATE_UPDATED);
             String imagePath = data.getStringExtra(AddEditNoteActivity.EXTRA_IMAGE_PATH);
+            String categoryTitle = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY_TITLE);
 
-            Note note = new Note(title, description, dateCreated, dateUpdated, imagePath);
+            Note note = new Note(title, description, dateCreated, dateUpdated, imagePath, categoryTitle);
 
             noteViewModel.insert(note);
             Snackbar.make(findViewById(R.id.activity_content), R.string.note_saved, Snackbar.LENGTH_LONG).show();
@@ -127,8 +153,9 @@ public class NotesActivity extends BaseActivity {
             Date dateCreated = (Date) data.getSerializableExtra(AddEditNoteActivity.EXTRA_DATE_CREATED);
             Date dateUpdated = (Date) data.getSerializableExtra(AddEditNoteActivity.EXTRA_DATE_UPDATED);
             String imagePath = data.getStringExtra(AddEditNoteActivity.EXTRA_IMAGE_PATH);
+            String categoryTitle = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY_TITLE);
 
-            Note note = new Note(title, description, dateCreated, dateUpdated, imagePath);
+            Note note = new Note(title, description, dateCreated, dateUpdated, imagePath, categoryTitle);
 
             int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);
             if (id == -1) {

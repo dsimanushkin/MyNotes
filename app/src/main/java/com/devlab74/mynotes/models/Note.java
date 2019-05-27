@@ -15,13 +15,15 @@ public class Note {
     private Date dateCreated;
     private Date dateLastUpdated;
     private String optionalImagePath;
+    private String categoryTitle;
 
-    public Note(String title, String description, Date dateCreated, Date dateLastUpdated, String optionalImagePath) {
+    public Note(String title, String description, Date dateCreated, Date dateLastUpdated, String optionalImagePath, String categoryTitle) {
         this.title = title;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dateLastUpdated = dateLastUpdated;
         this.optionalImagePath = optionalImagePath;
+        this.categoryTitle = categoryTitle;
     }
 
     public Note() {
@@ -75,6 +77,14 @@ public class Note {
         this.optionalImagePath = optionalImagePath;
     }
 
+    public String getCategoryTitle() {
+        return categoryTitle;
+    }
+
+    public void setCategoryTitle(String categoryTitle) {
+        this.categoryTitle = categoryTitle;
+    }
+
     @Override
     public String toString() {
         return "Note{" +
@@ -84,6 +94,7 @@ public class Note {
                 ", dateCreated=" + dateCreated +
                 ", dateLastUpdated=" + dateLastUpdated +
                 ", optionalImagePath='" + optionalImagePath + '\'' +
+                ", categoryTitle='" + categoryTitle + '\'' +
                 '}';
     }
 }

@@ -46,7 +46,8 @@ public class NoteRecyclerAdapter extends ListAdapter<Note, NoteRecyclerAdapter.N
             return oldItem.getTitle().equals(newItem.getTitle()) &&
                     oldItem.getDescription().equals(newItem.getDescription()) &&
                     oldItem.getDateCreated().equals(newItem.getDateCreated()) &&
-                    oldItem.getDateLastUpdated().equals(newItem.getDateLastUpdated());
+                    oldItem.getDateLastUpdated().equals(newItem.getDateLastUpdated()) &&
+                    oldItem.getCategoryTitle().equals(newItem.getCategoryTitle());
         }
     };
 

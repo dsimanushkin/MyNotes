@@ -29,6 +29,7 @@ dependencies {
     def glide_version = "4.9.0"
     def photo_view_version = "2.3.0"
     def lovely_dialog_version = "1.1.0"
+    def calligraphy_version = "2.3.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -58,4 +59,7 @@ dependencies {
 
     // Lovely Dialog
     implementation "com.yarolegovich:lovely-dialog:$lovely_dialog_version"
+
+    // Calligraphy
+    implementation "uk.co.chrisjenx:calligraphy:$calligraphy_version"
 }

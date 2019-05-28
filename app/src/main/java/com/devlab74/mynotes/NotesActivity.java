@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,7 @@ public class NotesActivity extends BaseActivity {
     private RecyclerView recyclerViewNavigation;
     private ImageButton addCategoryButton;
     private SearchView searchView;
+    FrameLayout activityContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class NotesActivity extends BaseActivity {
         navigationView = findViewById(R.id.navigation_view);
         View headerView = navigationView.getHeaderView(0);
         addCategoryButton = headerView.findViewById(R.id.add_category);
+        activityContent = findViewById(R.id.activity_content);
 
         initRecyclerView();
         subscribeObservers();
@@ -116,9 +119,25 @@ public class NotesActivity extends BaseActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 noteViewModel.delete(noteRecyclerAdapter.getNoteAt(viewHolder.getAdapterPosition()));
-                Snackbar.make(findViewById(R.id.activity_content), R.string.note_deleted, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(activityContent, R.string.note_deleted, Snackbar.LENGTH_LONG).show();
             }
         }).attachToRecyclerView(recyclerView);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && floatingActionButton.isShown())
+                    floatingActionButton.hide();
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    floatingActionButton.show();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
     private View.OnClickListener onClickListener = view -> {
@@ -127,7 +146,8 @@ public class NotesActivity extends BaseActivity {
     };
 
     private void initActionBar() {
-        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_navigation_menu);
@@ -153,14 +173,14 @@ public class NotesActivity extends BaseActivity {
                         if (!text.trim().isEmpty()) {
                             for (Category cat : categoryList) {
                                 if (cat.getTitle().trim().toLowerCase().equals(text.trim().toLowerCase())) {
-                                    Snackbar.make(findViewById(R.id.activity_content), R.string.category_exists, Snackbar.LENGTH_LONG).show();
+                                    Snackbar.make(activityContent, R.string.category_exists, Snackbar.LENGTH_LONG).show();
                                     return;
                                 }
                             }
                             categoryViewModel.insert(new Category(text));
-                            Snackbar.make(findViewById(R.id.activity_content), R.string.category_added, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(activityContent, R.string.category_added, Snackbar.LENGTH_LONG).show();
                         } else {
-                            Snackbar.make(findViewById(R.id.activity_content), R.string.category_title_cannot_be_empty, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(activityContent, R.string.category_title_cannot_be_empty, Snackbar.LENGTH_LONG).show();
                         }
                     }).show();
         });
@@ -180,7 +200,7 @@ public class NotesActivity extends BaseActivity {
                                 }
                             }
                             categoryViewModel.delete(category);
-                            Snackbar.make(findViewById(R.id.activity_content), R.string.category_title_cannot_be_empty, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(activityContent, R.string.category_title_cannot_be_empty, Snackbar.LENGTH_LONG).show();
                         })
                         .setNegativeButton(android.R.string.no, null)
                         .show();
@@ -218,7 +238,7 @@ public class NotesActivity extends BaseActivity {
             Note note = new Note(title, description, dateCreated, dateUpdated, imagePath, categoryTitle);
 
             noteViewModel.insert(note);
-            Snackbar.make(findViewById(R.id.activity_content), R.string.note_saved, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(activityContent, R.string.note_saved, Snackbar.LENGTH_LONG).show();
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
             String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
             String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
@@ -231,13 +251,13 @@ public class NotesActivity extends BaseActivity {
 
             int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);
             if (id == -1) {
-                Snackbar.make(findViewById(R.id.activity_content), R.string.note_not_updated, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(activityContent, R.string.note_not_updated, Snackbar.LENGTH_LONG).show();
                 return;
             }
 
             note.setId(id);
             noteViewModel.update(note);
-            Snackbar.make(findViewById(R.id.activity_content), R.string.note_updated, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(activityContent, R.string.note_updated, Snackbar.LENGTH_LONG).show();
         }
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import com.devlab74.mynotes.viewmodels.NoteViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.util.Date;
 import java.util.List;
@@ -49,6 +51,7 @@ public class NotesActivity extends BaseActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private RecyclerView recyclerViewNavigation;
+    private ImageButton addCategoryButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class NotesActivity extends BaseActivity {
         floatingActionButton = findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(onClickListener);
         navigationView = findViewById(R.id.navigation_view);
+        View headerView = navigationView.getHeaderView(0);
+        addCategoryButton = headerView.findViewById(R.id.add_category);
 
         initRecyclerView();
         subscribeObservers();
@@ -130,6 +135,32 @@ public class NotesActivity extends BaseActivity {
         recyclerViewNavigation.setLayoutManager(new LinearLayoutManager(this));
         categoryDrawerAdapter = new CategoryDrawerAdapter();
         recyclerViewNavigation.setAdapter(categoryDrawerAdapter);
+
+        categoryDrawerAdapter.setOnItemClickListener(category -> {
+            noteRecyclerAdapter.getNoteFilter().filter("cat:" + category.getTitle());
+            drawerLayout.closeDrawers();
+        });
+
+        addCategoryButton.setOnClickListener(view -> {
+            new LovelyTextInputDialog(this)
+                    .setTopColorRes(R.color.colorPrimary)
+                    .setTitle(R.string.new_category_title)
+                    .setIcon(R.drawable.ic_add_category)
+                    .setConfirmButton(android.R.string.ok, text -> {
+                        if (!text.trim().isEmpty()) {
+                            for (Category cat : categoryList) {
+                                if (cat.getTitle().trim().toLowerCase().equals(text.trim().toLowerCase())) {
+                                    Snackbar.make(findViewById(R.id.activity_content), R.string.category_exists, Snackbar.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+                            categoryViewModel.insert(new Category(text));
+                            Snackbar.make(findViewById(R.id.activity_content), R.string.category_added, Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(findViewById(R.id.activity_content), R.string.category_title_cannot_be_empty, Snackbar.LENGTH_LONG).show();
+                        }
+                    }).show();
+        });
     }
 
     @Override

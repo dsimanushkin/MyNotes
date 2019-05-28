@@ -28,6 +28,7 @@ dependencies {
     def gson_version = "2.8.2"
     def glide_version = "4.9.0"
     def photo_view_version = "2.3.0"
+    def lovely_dialog_version = "1.1.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -54,4 +55,7 @@ dependencies {
 
     // PhotoView
     implementation "com.github.chrisbanes:PhotoView:$photo_view_version"
+
+    // Lovely Dialog
+    implementation "com.yarolegovich:lovely-dialog:$lovely_dialog_version"
 }

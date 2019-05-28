@@ -11,4 +11,8 @@
     <string name="add_note">Add note</string>
     <string name="edit_note">Edit note</string>
     <string name="note_deleted">Note has been deleted!</string>
+    <string name="new_category_title">New category title: </string>
+    <string name="category_exists">This category already exists!</string>
+    <string name="category_added">New category have been added!</string>
+    <string name="category_title_cannot_be_empty">Category title cannot be empty!</string>
 </resources>

@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
@@ -53,6 +53,7 @@ public class NotesActivity extends BaseActivity {
     private NavigationView navigationView;
     private RecyclerView recyclerViewNavigation;
     private ImageButton addCategoryButton;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class NotesActivity extends BaseActivity {
         subscribeObservers();
         initNavigationView();
         initActionBar();
+        initSearchView();
     }
 
     private void subscribeObservers() {
@@ -182,6 +184,22 @@ public class NotesActivity extends BaseActivity {
                         })
                         .setNegativeButton(android.R.string.no, null)
                         .show();
+            }
+        });
+    }
+
+    private void initSearchView() {
+        searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                noteRecyclerAdapter.getNoteFilter().filter(newText);
+                return true;
             }
         });
     }

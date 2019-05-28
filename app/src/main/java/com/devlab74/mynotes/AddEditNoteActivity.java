@@ -14,9 +14,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
@@ -92,6 +92,8 @@ public class AddEditNoteActivity extends BaseActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        SearchView searchViewToolbar = toolbar.findViewById(R.id.search_view);
+        searchViewToolbar.setVisibility(View.GONE);
     }
 
     @Override

@@ -15,4 +15,7 @@
     <string name="category_exists">This category already exists!</string>
     <string name="category_added">New category have been added!</string>
     <string name="category_title_cannot_be_empty">Category title cannot be empty!</string>
+    <string name="delete_category">Delete category</string>
+    <string name="warning_delete_category">Warning! All notes belonging to this category will be deleted!</string>
+    <string name="category_has_been_deleted">Category has been deleted!</string>
 </resources>

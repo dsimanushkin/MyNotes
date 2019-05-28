@@ -28,6 +28,7 @@ import com.devlab74.mynotes.viewmodels.NoteViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.util.Date;
@@ -160,6 +161,28 @@ public class NotesActivity extends BaseActivity {
                             Snackbar.make(findViewById(R.id.activity_content), R.string.category_title_cannot_be_empty, Snackbar.LENGTH_LONG).show();
                         }
                     }).show();
+        });
+
+        categoryDrawerAdapter.setOnLongClickListener(category -> {
+            if (!category.getTitle().equals("All notes") && !category.getTitle().equals("Uncategorized")) {
+                new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                        .setTopColorRes(R.color.colorPrimary)
+                        .setButtonsColorRes(R.color.colorPrimaryDark)
+                        .setTitle(R.string.delete_category)
+                        .setIcon(R.drawable.ic_delete)
+                        .setMessage(R.string.warning_delete_category)
+                        .setPositiveButton(android.R.string.ok, v -> {
+                            for (Note n : notesList) {
+                                if (n.getCategoryTitle().equals(category.getTitle())) {
+                                    noteViewModel.delete(n);
+                                }
+                            }
+                            categoryViewModel.delete(category);
+                            Snackbar.make(findViewById(R.id.activity_content), R.string.category_title_cannot_be_empty, Snackbar.LENGTH_LONG).show();
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .show();
+            }
         });
     }
 

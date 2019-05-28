@@ -18,6 +18,7 @@ public class CategoryDrawerAdapter extends RecyclerView.Adapter<CategoryDrawerAd
 
     private List<Category> categories = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
+    private OnLongClickListener onLongClickListener;
 
     @NonNull
     @Override
@@ -57,6 +58,14 @@ public class CategoryDrawerAdapter extends RecyclerView.Adapter<CategoryDrawerAd
                     onItemClickListener.onItemClick(categories.get(position));
                 }
             });
+
+            itemView.setOnLongClickListener(view -> {
+                int position = getAdapterPosition();
+                if (onLongClickListener != null && position != RecyclerView.NO_POSITION) {
+                    onLongClickListener.onLongClick(categories.get(position));
+                }
+                return true;
+            });
         }
     }
 
@@ -66,5 +75,13 @@ public class CategoryDrawerAdapter extends RecyclerView.Adapter<CategoryDrawerAd
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
+    }
+
+    public interface OnLongClickListener {
+        void onLongClick(Category category);
+    }
+
+    public void setOnLongClickListener(OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
     }
 }
